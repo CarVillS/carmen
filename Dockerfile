@@ -5,11 +5,12 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-FROM node:18-alpine AS app-base
-WORKDIR /app
-COPY app/package.json app/yarn.lock ./
-COPY app/spec ./spec
-COPY app/src ./src
+FROM node:18-alpine
+ WORKDIR /app
+ COPY package.json yarn.lock ./
+ RUN yarn install --production
+ COPY . .
+ CMD ["node", "src/index.js"]
 
 # Run tests to validate app
 FROM app-base AS test
